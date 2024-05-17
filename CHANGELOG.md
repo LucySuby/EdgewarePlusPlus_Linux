@@ -11,6 +11,12 @@
 
 •*Cleaned up log files so there's less benign errors being thrown for no reason*
 
+•*Changed sublabel mood from "subliminal" to "subliminals", to keep with consistency on config window and everything else i've mentioned about them*
+>Apologies for not catching this one sooner- if you already made a pack with this and knew about the issue so you changed it, you might need to change it back!
+
+•*Removed multiple unused variables from config*
+>This might require you to remake your config file!
+
 **Version 11**
 
 A lot has changed! So much so that I actually am having the unique problem of having to *look up* what was fixed since the last version. This is because **LewdDevelopment** has been helping catch me up to speed on Github and we've been rolling out smaller updates, using branches, etc.

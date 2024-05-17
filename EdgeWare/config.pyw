@@ -381,10 +381,6 @@ def show_window():
 
             presetsDangerVar = BooleanVar(root, value=(int(settings["presetsDanger"]) == 1))
 
-            sMessageChanceVar = IntVar(root, value=int(settings["sMessageChance"]))
-            sMessageDurationVar = IntVar(root, value=int(settings["sMessageDuration"]))
-            sMessageTransparencyVar = IntVar(root, value=int(settings["sMessageTransparency"]))
-
             movingChanceVar = IntVar(root, value=int(settings["movingChance"]))
             movingSpeedVar = IntVar(root, value=int(settings["movingSpeed"]))
             movingRandomVar = BooleanVar(root, value=(int(settings["movingRandom"]) == 1))
@@ -479,9 +475,6 @@ def show_window():
                 corruptionThemeCycleVar,
                 corruptionPurityModeVar,
                 corruptionFullPermVar,
-                sMessageChanceVar,
-                sMessageDurationVar,
-                sMessageTransparencyVar,
                 movingChanceVar,
                 movingSpeedVar,
                 movingRandomVar,
@@ -574,9 +567,6 @@ def show_window():
                 "corruptionThemeCycle",
                 "corruptionPurityMode",
                 "corruptionFullPerm",
-                "sMessageChance",
-                "sMessageDuration",
-                "sMessageTransparency",
                 "movingChance",
                 "movingSpeed",
                 "movingRandom",
@@ -1578,8 +1568,8 @@ def show_window():
     capmoodttp = CreateToolTip(
         toggleCaptionMood,
         'Caption Popups have the option to use a special mood in the captions.json file called "subliminals". This mood doesn\'t '
-        "normally appear like other captions, and is meant for short, fast messages that will blink at you very quickly.\n\nThis setting will "
-        "disable using the subliminals mood, and instead pull from all other valid captions. If your pack doesn't support subliminals, this "
+        "normally appear like other captions, and is meant for short, fast messages that will blink at you very quickly.\n\n"
+        "If your pack doesn't support subliminals, this "
         "setting doesn't need to be disabled- it will automatically switch to using regular captions.",
     )
 

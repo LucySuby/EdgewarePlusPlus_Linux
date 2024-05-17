@@ -1,7 +1,7 @@
 # This sublabel.pyw originally provided very generously by u/basicmo!
 
 import json
-import logging
+#import logging
 import os
 import random
 import random as rand
@@ -19,7 +19,7 @@ from utils.settings import Settings
 SYS_ARGS = sys.argv.copy()
 SYS_ARGS.pop(0)
 
-utils.init_logging("sublabel")
+#utils.init_logging("sublabel")
 
 settings = Settings()
 
@@ -68,8 +68,8 @@ def display_subliminal_message():
         try:
             with open(Resource.CAPTIONS, "r") as file:
                 l = json.load(file)
-                if l.get("subliminal", []) and settings.SUBLIMINAL_MOOD:
-                    return l.get("subliminal", [])
+                if l.get("subliminals", []) and settings.SUBLIMINAL_MOOD:
+                    return l.get("subliminals", [])
                 else:
                     if "prefix" in l:
                         del l["prefix"]
@@ -88,7 +88,7 @@ def display_subliminal_message():
                     # logging.info(flatlist)
                     return flatlist
         except Exception as e:
-            logging.fatal(f"failed to get sublabel prefixes. {e}")
+            print(f"failed to get sublabel prefixes. {e}")
             return []
 
     # Get a random subliminal message
