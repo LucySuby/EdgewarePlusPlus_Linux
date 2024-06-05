@@ -41,6 +41,10 @@ def show_file(path: Path | str):
     ctypes.windll.kernel32.SetFileAttributesW(path, SHOWN_ATTR)
 
 
+def open_directory(url: str):
+    subprocess.Popen(f'explorer "{url}"')
+
+
 def does_desktop_shortcut_exist(name: str):
     file = Path(name)
     return Path(os.path.expanduser("~/Desktop") / file.with_name(f"{file.name}.lnk")).exists()

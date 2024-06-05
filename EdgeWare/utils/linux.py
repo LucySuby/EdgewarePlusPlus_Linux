@@ -227,6 +227,10 @@ def show_file(path: Path | str):
         hidden_path.rename(path)
 
 
+def open_directory(url: str):
+    subprocess.Popen(["xdg-open", url])
+
+
 def does_desktop_shortcut_exist(name: str):
     file = Path(name)
     return Path(os.path.expanduser("~/Desktop") / file.with_name(f"{file.name}.desktop")).exists()

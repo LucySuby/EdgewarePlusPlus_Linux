@@ -132,7 +132,7 @@ def unbordered_window():
 
 def build_text():
     mood_list = text_data["moods"]
-    freq_list = text_data["freq_list"]
+    freq_list = text_data["freqList"]
     if MOOD_ID != "0":
         for i, mood in enumerate(mood_list):
             if mood not in mood_data["prompts"]:

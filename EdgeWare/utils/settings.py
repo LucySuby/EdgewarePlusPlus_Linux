@@ -149,7 +149,7 @@ class Settings:
         self.HIBERNATE_LENGTH = int(self.config["hibernateLength"])
         self.FIX_WALLPAPER = int(self.config["fixWallpaper"]) == 1
         self.PUMP_SCARE_OFFSET = int(self.config["pumpScareOffset"])
-        if self.HIBERNATE_MODE and self.HIBERNATE_TYPE == "Chaos":
+        if self.HIBERNATE_MODE and self.HIBERNATE_TYPE == "Chaos" and os.path.exists(Data.CHAOS_TYPE):
             with open(Data.CHAOS_TYPE, "r") as ct:
                 self.HIBERNATE_TYPE = ct.read()
 

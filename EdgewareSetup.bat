@@ -1,6 +1,5 @@
 @echo off
 :open
-color 0d
 echo +==============[ Welcome to Edgeware Setup~ ]==============+
 echo Python version:
 py --version

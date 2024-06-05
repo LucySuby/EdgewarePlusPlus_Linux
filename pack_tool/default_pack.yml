@@ -1,0 +1,149 @@
+info:
+  generate: true
+
+  # Name of your pack. (~20 char max)
+  name: "Pack name"
+
+  # Unique identified for your pack's mood file.
+  id: "PackID"
+
+  # Your name. (~20 char max)
+  creator: "Your name"
+
+  # Version of your pack.
+  version: "1.0"
+
+  # Short description of your pack. (~400 char max)
+  description: >
+    Pack description
+
+discord:
+  generate: true
+
+  # Discord status message when running the pack.
+  status: "Discord status"
+
+captions:
+  generate: true
+
+  # Text for the close button of a popup window.
+  close-text: "Close"
+
+  # List of generic captions without a prefix.
+  default-captions:
+    - "Caption 1"
+    - "Caption 2"
+
+  # List of caption prefixes, or "moods," to display particular captions on
+  # particular images. For example, the captions under a prefix with the name
+  # "foo" will only display on files the name of which start with "foo", such
+  # as "foo_abc.png". (Optional, leave the list empty to not use)
+  #
+  # Prefixes contain the following fields:
+  #   name       - Name of the prefix, as described previously.
+  #   chance     - The probability as a percentage that the prefix will be
+  #                shown on a popup instead of a default caption. Float value
+  #                between 0 and 100. (Optional, omit to not use)
+  #   max-clicks - The maximum number of clicks needed to close a popup with a
+  #                caption from the prefix. (Optional, omit to not use)
+  #   captions   - List of captions for the prefix.
+  prefixes:
+  # - name: "foo"
+  #   chance: 50
+  #   max-clicks: 1
+  #   captions:
+  #     - "Foo caption 1"
+  #     - "Foo caption 2"
+  # - name: "bar"
+  #   captions:
+  #     - "Bar caption"
+
+prompt:
+  generate: true
+
+  # Text for the submit button of a prompt window.
+  submit-text: "Submit"
+
+  # The minimum and maximum number of prompt strings in a single prompt window.
+  minimum-length: 1
+  maximum-length: 1
+
+  # Default prompts not associated with a mood.
+  default-prompts:
+    # The frequency of default prompts as a weight relative to the weight of
+    # moods.
+    weight: 100
+
+    # List of prompts. (Optional, leave the list empty to not use)
+    prompts:
+      - "Prompt 1"
+      - "Prompt 2"
+
+  # List of prompt moods. (Optional, leave the list empty to not use)
+  #
+  # Moods contain the following fields:
+  # name    - Name of the mood.
+  # weight  - The frequency of the mood's prompts as a weight relative to other
+  #           moods' weights.
+  # prompts - List of prompts for the mood.
+  moods:
+  # - name: "vanilla"
+  #   weight: 50
+  #   prompts:
+  #     - "Vanilla propmt 1"
+  #     - "Vanilla prompt 2"
+  # - name: "kinky"
+  #   weight: 75
+  #   prompts:
+  #     - "Kinky propmt 1"
+  #     - "Kinky prompt 2"
+
+web:
+  generate: true
+
+  # List of websites that can be opened by Edgeware.
+  #
+  # URLs contain the following fields:
+  #   url  - The URL.
+  #   mood - A mood name for the URL.
+  #   args - List of arguments that can be appended to the URL. (Optional, omit
+  #          to not use)
+  urls:
+    - url: "https://duckduckgo.com/?q="
+      mood: "duckduckgo"
+      args:
+        - "edgeware packs"
+        - "rule 34"
+    - url: "https://github.com/"
+      mood: "github"
+
+corruption:
+  generate: true
+
+  # List of corruption levels.
+  #
+  # Corruption levels contain the following fields:
+  #   add-moods    - List of moods to add at the level. (Optional, omit to not
+  #                  use)
+  #   remove-moods - List of moods to remove at the level. (Optional, omit to
+  #                  not use)
+  #   wallpaper    - The filename of the wallpaper to change to at this level.
+  #                  (Optional, omit to not use)
+  #   config       - Config to use at this level. (Optional, omit to not use)
+  levels:
+  # # Level 1
+  # - add-moods:
+  #     - "first"
+  #     - "second"
+  #   wallpaper: "wallpaper-1.png"
+  #
+  # # Level 2
+  # - add-moods:
+  #     - "third"
+  #   remove-moods:
+  #     - "first"
+  #   wallpaper: "wallpaper-2.png"
+  #
+  # # Level 3
+  # - remove-moods:
+  #     - "second"

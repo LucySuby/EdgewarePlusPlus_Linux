@@ -136,7 +136,7 @@ if settings.CORRUPTION_MODE:
         # the launches will reset when the user specifies in the config, or a new pack is loaded
         if not os.path.exists(Data.CORRUPTION_LAUNCHES):
             with open(Data.CORRUPTION_LAUNCHES, "w") as f:
-                f.write("0")
+                f.write("1")
         elif settings.CORRUPTION_TRIGGER == "Launch":
             with open(Data.CORRUPTION_LAUNCHES, "r+") as f:
                 i = int(f.readline())
@@ -274,6 +274,7 @@ def url_select(arg: int):
     logging.info(f"selected url {arg}")
     return WEB_DICT["urls"][arg] + WEB_DICT["args"][arg].split(",")[rand.randrange(len(WEB_DICT["args"][arg].split(",")))]
 
+START_TIME = time.monotonic()
 
 # main function, probably can do more with this but oh well i'm an idiot so
 def main():
@@ -378,8 +379,8 @@ def main():
                     for i in range(0, rand.randint(int(settings.WAKEUP_ACTIVITY / 2), settings.WAKEUP_ACTIVITY)):
                         roll_for_initiative()
                 except Exception as e:
-                    logging.warning(f"failed to successfully run {HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
-            if HIBERNATE_TYPE == "Spaced":
+                    logging.warning(f"failed to successfully run {settings.HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
+            if settings.HIBERNATE_TYPE == "Spaced":
                 try:
                     end_time = time.monotonic() + float(settings.HIBERNATE_LENGTH)
                     print(f"running spaced hibernate. current time is {time.monotonic()}, end time is {end_time}")
@@ -387,8 +388,8 @@ def main():
                         roll_for_initiative()
                         time.sleep(float(settings.DELAY) / 1000.0)
                 except Exception as e:
-                    logging.warning(f"failed to successfully run {HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
-            if HIBERNATE_TYPE == "Glitch":
+                    logging.warning(f"failed to successfully run {settings.HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
+            if settings.HIBERNATE_TYPE == "Glitch":
                 try:
                     glitch_sleep = settings.HIBERNATE_LENGTH / settings.WAKEUP_ACTIVITY
                     total_time = time.monotonic()
@@ -416,8 +417,8 @@ def main():
                         time.sleep(float(end_time - time.monotonic()))
                     roll_for_initiative()
                 except Exception as e:
-                    logging.warning(f"failed to successfully run {HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
-            if HIBERNATE_TYPE == "Ramp":
+                    logging.warning(f"failed to successfully run {settings.HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
+            if settings.HIBERNATE_TYPE == "Ramp":
                 try:
                     print(
                         f"hibernate type is ramp. ramping up speed for {settings.HIBERNATE_LENGTH}, max speed is {settings.DELAY*0.9}, and popups at max speed is {settings.WAKEUP_ACTIVITY}"
@@ -441,13 +442,13 @@ def main():
                         roll_for_initiative()
                         time.sleep(float(settings.DELAY * 0.9) / 1000.0)
                 except Exception as e:
-                    logging.warning(f"failed to successfully run {HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
-            if HIBERNATE_TYPE == "Pump-Scare":
+                    logging.warning(f"failed to successfully run {settings.HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
+            if settings.HIBERNATE_TYPE == "Pump-Scare":
                 try:
                     print("hibernate type is pump-scare.")
                     roll_for_initiative()
                 except Exception as e:
-                    logging.warning(f"failed to successfully run {HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
+                    logging.warning(f"failed to successfully run {settings.HIBERNATE_TYPE} hibernate.\n\tReason: {e}")
             time.sleep(0.5)
             running_hibernate.set()
 
@@ -493,9 +494,22 @@ def do_roll(mod: float) -> bool:
 #       replace: will only happen one single time in the run of the application, but checks ALL folders
 def annoyance():
     global MITOSIS_LIVE
+    corr_chance = 0
     if settings.CORRUPTION_MODE:
         with open(Data.CORRUPTION_LEVEL, "r") as f:
             tracked_level = int(f.read())
+        if settings.CORRUPTION_TRIGGER == "Launch":
+            corr_chance = corruption_percent()
+            if corr_chance > 1.0:
+                #remove leading digit if corruption level isn't maxxed
+                #this only happens for launches because launches don't reset to 0 when corruption levels up
+                if settings.CORRUPTION_PURITY and tracked_level != 1:
+                    corr_chance = corr_chance % 1
+                elif not settings.CORRUPTION_PURITY and tracked_level != len(corruption_data["moods"].keys()):
+                    corr_chance = corr_chance % 1
+                else:
+                    #if it's maxxed, just keep it at 1
+                    corr_chance = 1
     while True:
         if settings.CORRUPTION_MODE:
             with open(Data.CORRUPTION_LEVEL, "r") as f:
@@ -506,7 +520,7 @@ def annoyance():
                 update_media(corrupted_list)
                 wallpaper_check(Resource.WALLPAPER)
                 tracked_level = current_level
-        roll_for_initiative()
+        roll_for_initiative(corr_chance)
         if not MITOSIS_LIVE and (settings.MITOSIS_MODE or settings.LOWKEY_MODE) and HAS_IMAGES:
             subprocess.Popen([sys.executable, Process.POPUP]) if settings.MOOD_OFF else subprocess.Popen([sys.executable, Process.POPUP, f"-{MOOD_ID}"])
             MITOSIS_LIVE = True
@@ -518,7 +532,12 @@ def annoyance():
 
 
 # independently attempt to do all active settings with probability equal to their freq value
-def roll_for_initiative():
+def roll_for_initiative(corr_chance: float):
+    if settings.CORRUPTION_MODE and settings.CORRUPTION_TRIGGER != "Launch":
+        corr_chance = corruption_percent()
+        if corr_chance > 1.0:
+            corr_chance = 1
+    #print(f"corruption chance: {corr_chance}")
     if settings.HIBERNATE_TYPE == "Pump-Scare" and settings.HIBERNATE_MODE:
         if HAS_IMAGES:
             if HAS_AUDIO:
@@ -871,6 +890,24 @@ def corruption_timer(total_levels: int):
                 f.truncate()
                 print(f"corruption now at level {corruption_level-1}")
 
+def corruption_percent():
+    if settings.CORRUPTION_TRIGGER == "Timed":
+        with open(Data.CORRUPTION_LEVEL, "r") as f:
+            corruption_level = int(f.read())
+        if settings.CORRUPTION_PURITY:
+            corruption_completed_time = (len(corruption_data["moods"].keys()) - corruption_level) * settings.CORRUPTION_TIME
+        else:
+            corruption_completed_time = (corruption_level - 1) * settings.CORRUPTION_TIME
+        #remove already elapsed time before dividing
+        corruption_chance = (time.monotonic() - (START_TIME + corruption_completed_time)) / settings.CORRUPTION_TIME
+    if settings.CORRUPTION_TRIGGER == "Popup":
+        with open(Data.CORRUPTION_POPUPS, "r") as f:
+            corruption_chance = int(f.read()) / settings.CORRUPTION_POPUPS
+    if settings.CORRUPTION_TRIGGER == "Launch":
+        with open(Data.CORRUPTION_LAUNCHES, "r") as f:
+            curr_launches = int(f.read())
+        corruption_chance = curr_launches / settings.CORRUPTION_LAUNCHES
+    return corruption_chance
 
 if __name__ == "__main__":
     main()
